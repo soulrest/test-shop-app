@@ -1,0 +1,39 @@
+.header {
+  width: 100%;
+  height: 5rem;
+  padding: 0 10%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--main-bg-color);
+  border-bottom: 0.35rem solid var(--main-color);
+}
+
+.header h1 {
+  color: var(--main-color);
+  font-family: "Stick No Bills", sans-serif;
+}
+
+.header ul {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.header ul li {
+  flex-direction: row;
+  margin: 0 0.2rem;
+}
+
+nav ul a {
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  color: var(--main-color);
+}
+
+.selected {
+  color: green;
+}

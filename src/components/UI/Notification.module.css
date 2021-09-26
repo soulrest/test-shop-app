@@ -1,0 +1,27 @@
+.notification {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2rem;
+  background-color: var(--main-message-color);
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 10%;
+  align-items: center;
+  color: var(--main-bg-color);
+}
+
+.notification h2,
+.notification p {
+  font-size: 1rem;
+  margin: 0;
+}
+
+.error {
+  background-color: var(--error-message-color);
+}
+
+.success {
+  background-color: var(--success-message-color);
+}

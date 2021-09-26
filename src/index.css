@@ -1,0 +1,41 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Stick+No+Bills&display=swap");
+
+:root {
+  --main-bg-color: #dddddd;
+  --main-color: #1a2d38;
+  --main-message-color: #64b3e0;
+  --error-message-color: #973939;
+  --warning-message-color: #f2ff39;
+  --success-message-color: #2da72d;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: "Noto Sans JP", sans-serif;
+}
+
+body {
+  margin: 0;
+  background-color: var(--main-bg-color);
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+  padding: 0.5rem 1.5rem;
+  border-radius: 6px;
+  background-color: transparent;
+  color: var(--main-color);
+  border: 1px solid var(--main-color);
+}
+
+button:hover,
+button:active {
+  background-color: var(--main-color);
+  border-color: var(--main-color);
+  color: var(--main-bg-color);
+}
