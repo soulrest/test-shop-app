@@ -4,8 +4,8 @@ import { useSelector, useDispatch } from "react-redux";
 import Cart from "../Cart/Cart";
 import Products from "./Products";
 import LoadingSpinner from "../UI/LoadingSpinner";
-import { sendCartData } from "../../store/cart-slice";
-import { fetchProductData } from "../../store/products-slice";
+import { sendCartData, cartActions } from "../../store/cart-slice";
+import { fetchProductData, productActions } from "../../store/products-slice";
 
 let isInitial = true;
 
@@ -21,37 +21,43 @@ function Shop() {
 
   useEffect(() => {
     if (isInitial) {
+      dispatch(fetchProductData());
       isInitial = false;
       return;
     }
+
     if (cart.changed && userId) dispatch(sendCartData(cart, userId));
+
+    return () => dispatch(cartActions.unsubscribeCart());
   }, [dispatch, cart, userId]);
 
   useEffect(() => {
-    dispatch(fetchProductData());
-  }, [dispatch]);
+    if (productDataChanged) dispatch(fetchProductData());
+    return () => dispatch(productActions.unsubscribeToProductData());
+  }, [dispatch, productDataChanged]);
 
   let output;
+  const dispalyCart = showCart && userType === "user" && <Cart />;
 
-  if (products.length === 0 && !productDataChanged) {
-    output = (
-      <Fragment>
-        {showCart && userType === "user" && <Cart />}
+  if (products.length === 0) {
+    output =
+      products.length === 0 && isInitial ? (
+        <LoadingSpinner />
+      ) : (
         <h1 style={{ textAlign: "center", margin: "10rem 0" }}>
           No products added yet!
         </h1>
-      </Fragment>
-    );
+      );
   } else {
-    output = (
-      <Fragment>
-        {showCart && userType === "user" && <Cart />}
-        {productDataChanged ? <Products /> : <LoadingSpinner />}
-      </Fragment>
-    );
+    output = <Products products={products} userType={userType} />;
   }
 
-  return output;
+  return (
+    <Fragment>
+      {dispalyCart}
+      {output}
+    </Fragment>
+  );
 }
 
 export default Shop;

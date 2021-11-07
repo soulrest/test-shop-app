@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { uiActions } from "./ui-slice";
 
 const FIREBASE_PRODUCTS_URL = process.env.REACT_APP_FIREBASE_PRODUCTS_URL;
+const FIREBASE_URL = process.env.REACT_APP_FIREBASE_URL;
 
 const productSlice = createSlice({
   name: "products",
@@ -12,9 +13,23 @@ const productSlice = createSlice({
   reducers: {
     replaceProducts(state, action) {
       state.products = action.payload.products;
+      state.changed = true;
     },
-    triggerChanges(state, action) {
-      state.changed = action.payload;
+    unsubscribeToProductData(state) {
+      state.changed = false;
+    },
+    addProduct(state, action) {
+      state.changed = true;
+      state.products = [
+        ...state.products,
+        {
+          id: Math.random().toString(),
+          title: action.payload.title,
+          price: action.payload.price,
+          description: action.payload.description,
+          img: action.payload.img,
+        },
+      ];
     },
     removeProduct(state, action) {
       const id = action.payload;
@@ -27,7 +42,6 @@ const productSlice = createSlice({
 export const fetchProductData = () => {
   return async (dispatch) => {
     const fetchData = async () => {
-      dispatch(productActions.triggerChanges(false));
       const response = await fetch(FIREBASE_PRODUCTS_URL);
       if (!response.ok) throw new Error("Could not fetch product data.");
       const data = await response.json();
@@ -35,17 +49,27 @@ export const fetchProductData = () => {
       return data;
     };
     try {
-      const productData = await fetchData();
+      let productData = await fetchData();
+      if (!productData) productData = {};
+
       const products = Object.entries(productData).map((product) => {
         return {
           id: product[0],
           title: product[1].title,
           price: product[1].price,
           description: product[1].description,
+          img: product[1].img,
         };
       });
+
       dispatch(productActions.replaceProducts({ products }));
-      dispatch(productActions.triggerChanges(true));
+      dispatch(
+        uiActions.showNotification({
+          status: "success",
+          title: "Success!",
+          message: "Fetch product data successfully",
+        })
+      );
     } catch (err) {
       dispatch(
         uiActions.showNotification({
@@ -60,7 +84,6 @@ export const fetchProductData = () => {
 
 export const sendProductData = (product) => {
   return async (dispatch) => {
-    dispatch(productActions.triggerChanges());
     dispatch(
       uiActions.showNotification({
         status: "pending",
@@ -92,6 +115,44 @@ export const sendProductData = (product) => {
           status: "error",
           title: "Error!",
           message: "Sending product data failed!",
+        })
+      );
+    }
+  };
+};
+
+export const deleteProductData = (id) => {
+  return async (dispatch) => {
+    dispatch(
+      uiActions.showNotification({
+        status: "pending",
+        title: "Deleting...",
+        message: "Deleting product from data.",
+      })
+    );
+    const sendRequest = async () => {
+      const response = await fetch(`${FIREBASE_URL}/products/${id}.json`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+      });
+      if (!response.ok) throw new Error("Deleting product from data failed.");
+    };
+    try {
+      await dispatch(productActions.removeProduct(id));
+      await sendRequest();
+      dispatch(
+        uiActions.showNotification({
+          status: "success",
+          title: "Success!",
+          message: "Product was successfully deteled from data ",
+        })
+      );
+    } catch {
+      dispatch(
+        uiActions.showNotification({
+          status: "error",
+          title: "Error!",
+          message: "Deleting product from data failed!",
         })
       );
     }

@@ -11,6 +11,7 @@ import AddProductForm from "./components/Shop/AddProductForm";
 import PageNotFound from "./components/UI/PageNotFound";
 import { authActions } from "./store/auth-slice";
 import { fetchCartData } from "./store/cart-slice";
+// import { fetchProductData } from "./store/products-slice";
 
 const App = () => {
   const { userType } = useSelector((state) => state.auth);
@@ -21,9 +22,7 @@ const App = () => {
 
   useEffect(() => {
     dispatch(authActions.checkLoggedIn());
-  }, [dispatch]);
-
-  useEffect(() => {
+    // dispatch(fetchProductData());
     if (userId && userType === "user") dispatch(fetchCartData(userId));
   }, [dispatch, userId, userType]);
 

@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+import { uiActions } from "./ui-slice";
 import { cartActions } from "./cart-slice";
 
 const FIREBASE_USERS_URL = process.env.REACT_APP_FIREBASE_USERS_URL;
@@ -53,7 +54,7 @@ const authSlice = createSlice({
     checkLoggedIn(state) {
       const tokenData = retrieveStoredToken();
       state.userType = tokenData?.userType;
-      state.userId = tokenData?.id;
+      state.id = tokenData?.id;
       state.token = tokenData?.token;
       state.isLoggedIn = !!tokenData?.token;
     },
@@ -137,6 +138,14 @@ export const authUser = (userData) => {
       localStorage.setItem("expirationTime", expirationTime);
       localStorage.setItem("userType", userType);
 
+      dispatch(
+        uiActions.showNotification({
+          status: "success",
+          title: "User Authorised",
+          message: "User seccessfully authorised!",
+        })
+      );
+
       const remainingTime = calculateRemainingTime(expirationTime);
       logoutTimer = setTimeout(() => {
         dispatch(authActions.logout());
@@ -144,6 +153,13 @@ export const authUser = (userData) => {
       }, remainingTime);
     } catch (err) {
       console.error(err);
+      dispatch(
+        uiActions.showNotification({
+          status: "error",
+          title: "Error!",
+          message: "User authentication failed!",
+        })
+      );
     }
   };
 };
@@ -157,6 +173,13 @@ export const logoutUser = () => {
     localStorage.removeItem("userType");
     localStorage.removeItem("id");
     if (logoutTimer) clearTimeout(logoutTimer);
+    dispatch(
+      uiActions.showNotification({
+        status: "success",
+        title: "User Logout",
+        message: "User seccessfully logout",
+      })
+    );
   };
 };
 

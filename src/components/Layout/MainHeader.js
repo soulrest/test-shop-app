@@ -9,21 +9,11 @@ const MainHeader = () => {
   const userType = useSelector((state) => state.auth.userType);
   return (
     <header className={classes.header}>
-      <h1>TestShopApp 🛍</h1>
+      <NavLink exact to="/">
+        <h1>TestShopApp 🛍</h1>
+      </NavLink>
       <nav>
         <ul>
-          <li>
-            <NavLink
-              exact
-              activeStyle={{
-                fontWeight: "bold",
-                borderBottom: "5px solid black",
-              }}
-              to="/"
-            >
-              Main Page
-            </NavLink>
-          </li>
           {userType && (
             <li>
               <NavLink

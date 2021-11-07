@@ -1,5 +1,6 @@
 {
-  "name": "react-complete-guide",
+  "name": "test-shop-app",
+  "author": "Andras Sop",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

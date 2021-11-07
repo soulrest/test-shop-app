@@ -10,6 +10,14 @@
   align-items: baseline;
 }
 
+.item img {
+  display: block;
+  width: 50%;
+  margin: 0.3rem auto;
+  border: 0.4rem solid var(--main-color);
+  border-radius: 0.8rem;
+}
+
 .price {
   border-radius: 30px;
   padding: 0.15rem 1.5rem;

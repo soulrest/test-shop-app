@@ -1,6 +1,7 @@
 import { useDispatch } from "react-redux";
 
-import { sendProductData, fetchProductData } from "../../store/products-slice";
+import { sendProductData } from "../../store/products-slice";
+import { productActions } from "../../store/products-slice";
 import useInput from "../hooks/use-input";
 import classes from "./AddProductForm.module.css";
 
@@ -36,8 +37,27 @@ const AddProductForm = () => {
     reset: resetDescriptionInput,
   } = useInput((value) => value.trim() !== "" && value.length >= 6);
 
+  const {
+    value: enteredImgURL,
+    hasError: imgURLInputHasError,
+    isValid: imgURLIsValid,
+    valueChangeHandler: imgURLChangeHandler,
+    inputBlurHandler: imgURLBlurHandler,
+    reset: resetImgURLInput,
+  } = useInput(
+    (value) =>
+      value.trim() !== "" &&
+      value.length >= 4 &&
+      /(https?:\/\/.*\.(?:png|jpg))/i.test(value)
+  );
+
   let formIsValid = false;
-  if (enteredDescriptionIsValid && enteredPriceIsValid && enteredTitleIsValid)
+  if (
+    enteredDescriptionIsValid &&
+    enteredPriceIsValid &&
+    enteredTitleIsValid &&
+    imgURLIsValid
+  )
     formIsValid = true;
 
   const submitHandler = async (event) => {
@@ -45,7 +65,8 @@ const AddProductForm = () => {
     if (
       !enteredDescriptionIsValid &&
       !enteredPriceIsValid &&
-      !enteredTitleIsValid
+      !enteredTitleIsValid &&
+      !imgURLIsValid
     )
       return;
 
@@ -53,14 +74,16 @@ const AddProductForm = () => {
       description: enteredDescription,
       title: enteredTitile,
       price: enteredPrice,
+      img: enteredImgURL,
     };
 
+    dispatch(productActions.addProduct(newProduct));
     dispatch(sendProductData(newProduct));
 
     resetTitileInput();
     resetPriceInput();
     resetDescriptionInput();
-    dispatch(fetchProductData());
+    resetImgURLInput();
   };
 
   const titleInputClasses = titleInputHasError
@@ -75,11 +98,15 @@ const AddProductForm = () => {
     ? `${classes["form-control"]} ${classes.invalid}`
     : `${classes["form-control"]}`;
 
+  const imgURLInputClasses = imgURLInputHasError
+    ? `${classes["form-control"]} ${classes.invalid}`
+    : `${classes["form-control"]}`;
+
   return (
     <form onSubmit={submitHandler}>
       <h2 className={classes["auth-header"]}>Add a new product to your shop</h2>
       <div className={titleInputClasses}>
-        <label htmlFor="title">Your Title</label>
+        <label htmlFor="title">Product title</label>
         <input
           type="text"
           id="title"
@@ -95,7 +122,7 @@ const AddProductForm = () => {
         )}
       </div>
       <div className={priceInputClasses}>
-        <label htmlFor="price">Your Price</label>
+        <label htmlFor="price">Product price</label>
         <input
           type="text"
           id="price"
@@ -111,7 +138,7 @@ const AddProductForm = () => {
         )}
       </div>
       <div className={descriptionInputClasses}>
-        <label htmlFor="description">Your description</label>
+        <label htmlFor="description">Product description</label>
         <input
           type="text"
           id="description"
@@ -122,6 +149,21 @@ const AddProductForm = () => {
         {descriptionInputHasError && (
           <p className={classes["error-text"]}>
             Product title field must be not less than 6 characters.
+          </p>
+        )}
+      </div>
+      <div className={imgURLInputClasses}>
+        <label htmlFor="img">Product image</label>
+        <input
+          type="text"
+          id="img"
+          onBlur={imgURLBlurHandler}
+          onChange={imgURLChangeHandler}
+          value={enteredImgURL}
+        />
+        {imgURLInputHasError && (
+          <p className={classes["error-text"]}>
+            Product image field must be valid URL link.
           </p>
         )}
       </div>

@@ -24,6 +24,7 @@ const Cart = () => {
           />
         ))}
       </ul>
+      <button>Place your order</button>
     </Card>
   );
 };

@@ -6,9 +6,9 @@ import classes from "./ProductItem.module.css";
 
 const ProductItem = (props) => {
   const dispatch = useDispatch();
-  const isUser = useSelector((state) => state.auth.userType) === "user";
+  const user = useSelector((state) => state.auth.userType);
 
-  const { title, price, description, id } = props;
+  const { title, price, description, id, img } = props;
 
   const addToCartHandler = () => {
     dispatch(
@@ -23,14 +23,21 @@ const ProductItem = (props) => {
   return (
     <li className={classes.item} key={id}>
       <Card>
+        <img src={img} alt={title} />
         <header>
           <h3>{title}</h3>
+
           <div className={classes.price}>£{price.toFixed(2)}</div>
         </header>
         <p>{description}</p>
         <div className={classes.actions}>
-          {isUser && <button onClick={addToCartHandler}>Add to Cart</button>}
+          {user === "user" && (
+            <button onClick={addToCartHandler}>Add to Cart</button>
+          )}
         </div>
+        {user === "admin" && (
+          <button onClick={() => props.onDelete(id)}>Delete</button>
+        )}
       </Card>
     </li>
   );

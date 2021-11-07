@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../../store/auth-slice";
 import classes from "./LogoutButton.module.css";
 
-const LoginButton = () => {
+const LodoutButton = () => {
   const history = useHistory();
   const isLogin = useSelector((state) => state.auth.isLoggedIn);
   const dispatch = useDispatch();
@@ -23,4 +23,4 @@ const LoginButton = () => {
   );
 };
 
-export default LoginButton;
+export default LodoutButton;
